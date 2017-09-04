@@ -64,7 +64,7 @@ Example
 ```
 #### Check searchhead and indexer status
 ```
-./splunk show cluster-bundle-status```
+./splunk show cluster-bundle-status
 ```
 
 ```
