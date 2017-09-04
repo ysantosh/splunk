@@ -39,3 +39,34 @@ fwdType=="full","Heavy")
 connectionType as "Forwarder Type"
 | table "Source IP" "Source Host" "Forwarder Type"
 ```
+
+### Find information about indexes in splunk like rentention period, sizeof index , index location 
+#### Find index and index size total 
+```
+| rest /services/data/indexes | where disabled = 0 | search NOT title = "_*" | stats sum(currentDBSizeMB) as size_MB by title |sort - size_MB
+```
+#### Find index and index size list per indexer
+```
+| rest /services/data/indexes | where disabled = 0 | search NOT title = "_*" | stats values(currentDBSizeMB) as size_MB by title | sort - size_MB
+```
+Note: you can remove ```| search NOT title = "_*" ``` if internal indexes size also needed.
+
+#### Find index rentention period, sizeof index , index location etc
+```
+| rest /services/data/indexes | where disabled = 0 | search NOT title = "_*" | eval currentDBSizeGB = round( currentDBSizeMB / 1024) | where currentDBSizeGB > 0 | table splunk_server title summaryHomePath_expanded minTime maxTime currentDBSizeGB totalEventCount frozenTimePeriodInSecs coldToFrozenDir maxTotalDataSizeMB | rename minTime AS earliest maxTime AS latest summaryHomePath_expanded AS index_path currentDBSizeGB AS index_size totalEventCount AS event_cnt frozenTimePeriodInSecs AS index_retention coldToFrozenDir AS index_path_frozen maxTotalDataSizeMB AS index_size_max title AS index
+```
+
+### Splunk CLI searches [CLI search link](https://docs.splunk.com/Documentation/SplunkCloud/6.6.1/SearchReference/CLIsearchsyntax) 
+Example 
+```
+./splunk search '<searchstring>' -preview true -auth admin:<passwd>
+
+```
+#### Check searchhead and indexer status
+```
+./splunk show cluster-bundle-status```
+```
+
+```
+./splunk list shcluster-member-info -uri http://<SH_server>:8089 -auth <id>:<passwd>
+```
