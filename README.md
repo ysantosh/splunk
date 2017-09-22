@@ -70,3 +70,13 @@ Example
 ```
 ./splunk list shcluster-member-info -uri http://<SH_server>:8089 -auth <id>:<passwd>
 ```
+
+#### check certificate information and expire etc and Generate the certificate
+```
+openssl x509 -in server.pem -noout -text 
+Generate the cert
+bin/splunk createssl server-cert -d etc/auth/ -n server
+
+```
+
+
