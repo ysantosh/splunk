@@ -79,4 +79,22 @@ bin/splunk createssl server-cert -d etc/auth/ -n server
 
 ```
 
+### Upgrade or restart of splunk
+#### Stop sequence
+* Cluster Master node
+* Deployment Manager
+* Search head cluster
+* Search Peer
+* Licence master
+#### - Upgrade or do file changes
+#### Start sequence
+* Licence Master
+* Cluster Master node  and put it in maintenance mode
+* Start search peer
+* Remove maintenance mode on cluster master
+* Start search head
+* Start Deployment Manager
+
+
+
 
