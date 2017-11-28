@@ -83,7 +83,7 @@ bin/splunk createssl server-cert -d etc/auth/ -n server
 ##### From search head using indexers query
 ```index=_internal group=thruput name=index_thruput | timechart span=1d sum(kb) AS daily_KB```
 ##### From search head using licence data
-```| rest splunk_server=cdc-anivia-splunklicense1.mobile.walmart.com /services/licenser/pools | rename title AS Pool | search [rest splunk_server=cdc-anivia-splunklicense1.mobile.walmart.com /services/licenser/groups | search is_active=1 | eval stack_id=stack_ids | fields stack_id] | eval quota=if(isnull(effective_quota),quota,effective_quota) | eval "Used"=round(used_bytes/1024/1024/1024, 3) | search Used="*" | eval "Quota"=round(quota/1024/1024/1024, 3) | fields Pool "Used" "Quota"```
+```| rest splunk_server=<server_name> /services/licenser/pools | rename title AS Pool | search [rest splunk_server=<server_name> /services/licenser/groups | search is_active=1 | eval stack_id=stack_ids | fields stack_id] | eval quota=if(isnull(effective_quota),quota,effective_quota) | eval "Used"=round(used_bytes/1024/1024/1024, 3) | search Used="*" | eval "Quota"=round(quota/1024/1024/1024, 3) | fields Pool "Used" "Quota"```
 The above query can be seen from splunk DMC - performance
 
 ### Upgrade or restart of splunk
