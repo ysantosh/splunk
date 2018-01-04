@@ -56,6 +56,12 @@ Note: you can remove ```| search NOT title = "_*" ``` if internal indexes size a
 | rest /services/data/indexes | where disabled = 0 | search NOT title = "_*" | eval currentDBSizeGB = round( currentDBSizeMB / 1024) | where currentDBSizeGB > 0 | table splunk_server title summaryHomePath_expanded minTime maxTime currentDBSizeGB totalEventCount frozenTimePeriodInSecs coldToFrozenDir maxTotalDataSizeMB | rename minTime AS earliest maxTime AS latest summaryHomePath_expanded AS index_path currentDBSizeGB AS index_size totalEventCount AS event_cnt frozenTimePeriodInSecs AS index_retention coldToFrozenDir AS index_path_frozen maxTotalDataSizeMB AS index_size_max title AS index
 ```
 
+### Find retention period
+
+```
+| rest /services/data/indexes | table  title frozenTimePeriodInSecs currentDBSizeMB
+```
+
 ### Splunk CLI searches [CLI search link](https://docs.splunk.com/Documentation/SplunkCloud/6.6.1/SearchReference/CLIsearchsyntax) 
 Example 
 ```
