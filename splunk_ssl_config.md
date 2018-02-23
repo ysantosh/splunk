@@ -123,28 +123,31 @@ serverCert = $SPLUNK_HOME/etc/auth/self_signed/myMainServerCertificate.pem
 sslPassword = ******* //Server cert password
 
 4. Restart splunkd.
-# $SPLUNK_HOME/bin/splunk restart splunkd
+```# $SPLUNK_HOME/bin/splunk restart splunkd```
 
 ### Configure your Splunk search head (act as forwarder) to use your certificates
 1. Copy your server certificate and CA public certificate into an accessible folder on the search head(s) you intend to configure. For example: $SPLUNK_HOME/etc/auth/self_signed/
 Warning: If you configure inputs.conf or outputs.conf in an app directory, the password is NOT encrypted and the clear-text value remains in the file. For this reason, you may prefer to create different certificates (signed by the same root CA) to use when configuring SSL in app directories.
 2. Create and Push configuration from deployer to shcluster-members (search heads) to use your certificates
-$SPLUNK_HOME/etc/shcluster/apps/walmart_certs_config/local
+$SPLUNK_HOME/etc/shcluster/apps/certs_config/local
 
 2. Define the configuration in
- $SPLUNK_HOME/etc/shcluster/apps/walmart_certs_config/local/outputs.conf (distribute your forwarding configuration):
-```[tcpout:group1]
+``` 
+$SPLUNK_HOME/etc/shcluster/apps/certs_config/local/outputs.conf (distribute your forwarding configuration):
+[tcpout:group1]
 server=idx1.com:9997,idx2.com:9997  	//Indexers lists
 clientCert = $SPLUNK_HOME/etc/auth/self_signed/myMainServerCertificate.pem
 useClientSSLCompression = true
 sslPassword = *******  		// CA Cert password
-sslVerifyServerCert = true```
+sslVerifyServerCert = true
+```
 
-3. Your $SPLUNK_HOME/etc/shcluster/apps/walmart_certs_config/local/server.conf should also have the following 
+3. Your $SPLUNK_HOME/etc/shcluster/apps/certs_config/local/server.conf should also have the following 
 ```[sslConfig]
 sslRootCAPath = $SPLUNK_HOME/etc/auth/self_signed/myCACertificate.pem
 serverCert = $SPLUNK_HOME/etc/auth/self_signed/myMainServerCertificate.pem
-sslPassword = ******* 		//Server cert password```
+sslPassword = ******* 		//Server cert password
+```
 
 4. Push configuration from deployer to shcluster-members
 $SPLUNK_HOME/bin/splunk apply shcluster-bundle -target <URI>:<management-port> -auth <admin username>:<password> 
