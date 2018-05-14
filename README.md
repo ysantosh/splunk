@@ -83,6 +83,10 @@ openssl x509 -in server.pem -noout -text
 Generate the cert
 bin/splunk createssl server-cert -d etc/auth/ -n server
 
+check cert hash
+echo '' | openssl s_client -connect <ip>:8089  2>/dev/null | openssl x509 -noout -text |grep 'Signature Algorithm'
+echo '' | openssl s_client -connect 10.15.125.155:8089  -tls1
+
 ```
 
 #### Find the daily ingested 
