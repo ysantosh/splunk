@@ -112,6 +112,17 @@ The above query can be seen from splunk DMC - performance
 * Start search head
 * Start Deployment Manager
 
-
-
+```index=_audit  action=search user=* search_id=* (info=granted OR info=completed) 
+| rex field=apiStartTime "'(?<start_time>[^']+)'" 
+| rex field=apiEndTime "'(?<end_time>[^']+)'" 
+| eval search_id = trim(if(isnull(search_id), id, search_id), "'") 
+| eval run_time_min=round(total_run_time/60,2) 
+| eval range=if(start_time=="ZERO_TIME","All Time", tostring(strptime(end_time, "%a %b %d %H:%M:%S %Y") - strptime(start_time, "%a %b %d %H:%M:%S %Y"),"duration")) 
+| stats earliest(_time) AS "Start Time" latest(_time) AS "End Time" values(start_time) AS "Search Earliest" values(end_time) AS "Search Latest" count values(range) AS range values(search) AS Search values(user) AS User max(run_time_min) AS "Run Time (Min)" by search_id 
+| convert ctime(*Time) 
+| where count>1 
+| rename search_id AS SID range AS "Search Range" 
+| table "Start Time" "End Time"  "Run Time (Min)" "Search Range" "Search Earliest" "Search Latest" 
+| sort 0 - "Run Time (Min)"
+```
 
